@@ -58,7 +58,7 @@ const Navbar = () => {
               {navlinks.map((link) => (
                 <li
                   key={link.name}
-                  className={`flex p-4 ${isActive === link.name && 'bg-[#3a3a43]'}`}
+                  className={`flex p-4 ${isActive === link.name && 'bg-[#1dc071]'}`}
                   onClick={() => {
                     setIsActive(link.name);
                     setToggleDrawer(false);
