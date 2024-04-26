@@ -1,4 +1,11 @@
-export { default as Home } from './Home';
-export { default as Profile } from './Profile';
-export { default as CreateCampaign } from './CreateCampaign';
-export { default as CampaignDetails } from './CampaignDetails';
+import Create from "./Create";
+import Home from "./Home";
+import Profile from "./Profile";
+import CampaignPage from "./CampaignPage";
+
+export {
+    Home,
+    Profile,
+    Create,
+    CampaignPage,
+}

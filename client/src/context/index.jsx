@@ -1,101 +1,99 @@
-import React, { useContext, createContext } from 'react';
+import React, { useContext, createContext } from "react"
 
-import { useAddress, useContract, useMetamask, useContractWrite } from '@thirdweb-dev/react';
-import { ethers } from 'ethers';
-import { EditionMetadataWithOwnerOutputSchema } from '@thirdweb-dev/sdk';
+import {
+  useAddress,
+  useContract,
+  useMetamask,
+  useContractWrite,
+} from "@thirdweb-dev/react"
+import { ethers } from "ethers"
 
-const StateContext = createContext();
+const ContractContext = createContext()
 
-export const StateContextProvider = ({ children }) => {
-  const { contract } = useContract('0xf59A1f8251864e1c5a6bD64020e3569be27e6AA9');
-  const { mutateAsync: createCampaign } = useContractWrite(contract, 'createCampaign');
+export const ContractContextProvider = ({ children }) => {
+  const { contract } = useContract("0x4B56f9182536EEb0Ca5Fb14ad593F99FCa4f932E")
+  console.log(contract)
+  const { mutateAsync: createCampaign } = useContractWrite(
+    contract,
+    "createCampaign"
+  )
 
-  const address = useAddress();
-  const connect = useMetamask();
+  const address = useAddress()
+  const connect = useMetamask()
 
   const publishCampaign = async (form) => {
     try {
       const data = await createCampaign({
-				args: [
-					address, // owner
-					form.title, // title
-					form.description, // description
-					form.target,
-					new Date(form.deadline).getTime(), // deadline,
-					form.image,
-				],
-			});
-
-      console.log("contract call success", data)
+        args: [
+          address,
+          form.title,
+          form.description,
+          form.target,
+          new Date(form.deadline).getTime(),
+          form.image,
+        ],
+      })
     } catch (error) {
-      console.log("contract call failure", error)
+      console.log(error)
     }
   }
 
   const getCampaigns = async () => {
-    const campaigns = await contract.call('getCampaigns');
+    const campaigns = await contract.call('getCampaigns')
 
-    const parsedCampaings = campaigns.map((campaign, i) => ({
+    const parseData = campaigns.map((campaign, index) => ({
+      id: index,
       owner: campaign.owner,
       title: campaign.title,
       description: campaign.description,
       target: ethers.utils.formatEther(campaign.target.toString()),
-      deadline: campaign.deadline.toNumber(),
       amountCollected: ethers.utils.formatEther(campaign.amountCollected.toString()),
-      image: campaign.image,
-      pId: i
-    }));
+      deadline: campaign.deadline.toNumber(),
+      image: campaign.image
+    }))
 
-    return parsedCampaings;
+    return parseData.reverse()
   }
 
-  const getUserCampaigns = async () => {
-    const allCampaigns = await getCampaigns();
+  const fundCampaign = async (id, amount) => {
+    const data = await contract.call('donateToCampaign', [id], {
+      value: ethers.utils.parseEther(amount)})
 
-    const filteredCampaigns = allCampaigns.filter((campaign) => campaign.owner === address);
-
-    return filteredCampaigns;
+    return data
   }
 
-  const donate = async (pId, amount) => {
-    const data = await contract.call('donateToCampaign', [pId], { value: ethers.utils.parseEther(amount)});
+  const getSupporters = async (id) => {
+    const supporters = await contract.call('getDonators', [id])
 
-    return data;
-  }
+    const numberOfSupporters = supporters[0].length
 
-  const getDonations = async (pId) => {
-    const donations = await contract.call('getDonators', [pId]);
-    const numberOfDonations = donations[0].length;
-
-    const parsedDonations = [];
-
-    for(let i = 0; i < numberOfDonations; i++) {
-      parsedDonations.push({
-        donator: donations[0][i],
-        donation: ethers.utils.formatEther(donations[1][i].toString())
+    const donations = []
+    
+    for (let i = 0; i < numberOfSupporters; i++) {
+      donations.push({
+        donator: supporters[0][i],
+        donation: ethers.utils.formatEther(supporters[1][i]).toString()
       })
     }
 
-    return parsedDonations;
+    return donations
   }
 
-
   return (
-    <StateContext.Provider
-      value={{ 
+    <ContractContext.Provider
+      value={{
         address,
-        contract,
         connect,
+        contract,
         createCampaign: publishCampaign,
         getCampaigns,
-        getUserCampaigns,
-        donate,
-        getDonations
+        fundCampaign,
+        getSupporters,
       }}
     >
       {children}
-    </StateContext.Provider>
+    </ContractContext.Provider>
   )
 }
 
-export const useStateContext = () => useContext(StateContext);
+export const useContractContext = () => useContext(ContractContext)

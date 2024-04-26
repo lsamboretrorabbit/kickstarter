@@ -3,16 +3,20 @@ module.exports = {
   content: [
     "./index.html",
     "./src/**/*.{js,ts,jsx,tsx}",
+    "./src/*.{js, ts, jsx, tsx}",
   ],
   theme: {
     extend: {
-      fontFamily: {
-        epilogue: ['Epilogue', 'sans-serif'],
-      },
-      boxShadow: {
-        secondary: '10px 10px 20px rgba(2, 2, 2, 0.25)',
-      },
+      colors: {
+        'dark-main': '#0e0e10',
+        'dark-alt': '#1a1a1c',
+        'warm-white': '#ececec',
+        'gray-border': '#272b30',
+        'gray-text': '#a5a5a5',
+        'accent': '#9f0bb1'
+      }
     },
   },
   plugins: [],
 }
+

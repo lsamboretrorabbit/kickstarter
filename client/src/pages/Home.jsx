@@ -1,31 +1,32 @@
-import React, { useState, useEffect } from 'react'
-
-import { DisplayCampaigns } from '../components';
-import { useStateContext } from '../context'
+import React, { useEffect, useState } from "react"
+import { useContractContext } from "../context"
+import CampaignsGrid from "../components/campaigns/CampaignsGrid"
+import Heading from "../components/Heading.jsx"
 
 const Home = () => {
-  const [isLoading, setIsLoading] = useState(false);
-  const [campaigns, setCampaigns] = useState([]);
+  const [data, setData] = useState([])
+  const [loading, setLoading] = useState(false)
 
-  const { address, contract, getCampaigns } = useStateContext();
+  const { address, contract, getCampaigns } = useContractContext()
 
   const fetchCampaigns = async () => {
-    setIsLoading(true);
-    const data = await getCampaigns();
-    setCampaigns(data);
-    setIsLoading(false);
+    setLoading(true)
+    const campaigns = await getCampaigns()
+    setData(campaigns)
+    setLoading(false)
   }
 
   useEffect(() => {
-    if(contract) fetchCampaigns();
-  }, [address, contract]);
+    if (contract) {
+      fetchCampaigns()
+    }
+  }, [address, contract])
 
   return (
-    <DisplayCampaigns 
-      title="All Campaigns"
-      isLoading={isLoading}
-      campaigns={campaigns}
-    />
+    <div className="p-5 max-w-7xl mx-auto">
+        <Heading title="All Campaigns" subtitle="Discover all ongoing campaings and donate"/>
+        <CampaignsGrid data={data} loading={loading} />
+    </div>
   )
 }
 

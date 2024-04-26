@@ -1,28 +1,48 @@
-import React from 'react';
-import { Route, Routes } from 'react-router-dom';
+import "./styles/globals.css"
+import { createBrowserRouter, Outlet, RouterProvider } from "react-router-dom"
 
-import { Sidebar, Navbar } from './components';
-import { CampaignDetails, CreateCampaign, Home, Profile } from './pages';
+import { Home, Profile, Create, CampaignPage } from "./pages"
+import { Navbar, Sidebar } from "./components"
 
-const App = () => {
+const Layout = () => {
   return (
-    <div className="relative sm:-8 p-4 bg-[#ffffff] min-h-screen flex flex-row">
-      <div className="sm:flex hidden mr-10 relative">
+    <div className="relative min-h-screen flex">
+      <div className="border-r border-gray-border hidden md:block">
         <Sidebar />
       </div>
-
-      <div className="flex-1 max-sm:w-full max-w-[1280px] mx-auto sm:pr-5">
+      <div className="flex-1 h-[100dvh] overflow-scroll">
         <Navbar />
-
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/profile" element={<Profile />} />
-          <Route path="/create-campaign" element={<CreateCampaign />} />
-          <Route path="/campaign-details/:id" element={<CampaignDetails />} />
-        </Routes>
+        <Outlet />
       </div>
     </div>
   )
 }
 
-export default App
+const router = createBrowserRouter([
+  {
+    path: "/",
+    element: <Layout />,
+    children: [
+      {
+        path: "/",
+        element: <Home />,
+      },
+      {
+        path: "/profile",
+        element: <Profile />,
+      },
+      {
+        path: "/create",
+        element: <Create />
+      },
+      {
+        path: "/campaign/:title",
+        element: <CampaignPage />
+      }
+    ],
+  },
+])
+
+export default function App() {
+  return <RouterProvider router={router} />
+}

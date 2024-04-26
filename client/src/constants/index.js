@@ -1,37 +1,33 @@
-import { createCampaign, dashboard, logout, payment, profile, withdraw } from '../assets';
+import {FiUser, FiDollarSign, FiGrid, FiRadio} from "react-icons/fi"
+import {BiMoneyWithdraw, BiLogOut} from "react-icons/bi"
+
 
 export const navlinks = [
-  {
-    name: 'dashboard',
-    imgUrl: dashboard,
-    link: '/',
-  },
-  {
-    name: 'campaign',
-    imgUrl: createCampaign,
-    link: '/create-campaign',
-  },
-  {
-    name: 'payment',
-    imgUrl: payment,
-    link: '/',
-    disabled: true,
-  },
-  {
-    name: 'withdraw',
-    imgUrl: withdraw,
-    link: '/',
-    disabled: true,
-  },
-  {
-    name: 'profile',
-    imgUrl: profile,
-    link: '/profile',
-  },
-  {
-    name: 'logout',
-    imgUrl: logout,
-    link: '/',
-    disabled: true,
-  },
-];
+    {
+      name: 'dashboard',
+      icon: FiGrid,
+      link: '/',
+    },
+    {
+      name: 'campaign',
+      icon: FiRadio,
+      link: '/create',
+    },
+    {
+      name: 'payment',
+      icon: FiDollarSign,
+      link: '/payment',
+      disabled: true,
+    },
+    {
+      name: 'withdraw',
+      icon: BiMoneyWithdraw,
+      link: '/withdraw',
+      disabled: true,
+    },
+    {
+      name: 'profile',
+      icon: FiUser,
+      link: '/profile',
+    }
+  ];
