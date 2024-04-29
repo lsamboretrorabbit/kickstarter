@@ -1,52 +1,47 @@
-import React, { useEffect, useState } from "react"
-import { navlinks } from "../constants"
-import {SiBlockchaindotcom} from 'react-icons/si'
-import { useLocation, useNavigate } from "react-router"
+import React, { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 
-const NavItem = ({ name, icon: Icon, disabled, isActive, onClick }) => {
-  return (
-    <div
-      onClick={onClick}
-      className={`${
-        isActive && "bg-gray-border/50"
-      } ${disabled ? 'opacity-50 cursor-not-allowed': 'cursor-pointer'} p-2 text-gray-text hover:text-warm-white hover:bg-gray-border/50 rounded-md relative group flex items-center transition-all duration-200`}
-    >
-      <Icon size={25} />
-      <span className="text-xs bg-dark-alt p-2 absolute ml-10 rounded-sm hidden group-hover:flex">
-        {name}
-      </span>
-    </div>
-  )
-}
+import { logo, sun } from '../assets';
+import { navlinks } from '../constants';
+
+const Icon = ({ styles, name, imgUrl, isActive, disabled, handleClick }) => (
+  <div className={`w-[48px] h-[48px] rounded-[10px] ${isActive && isActive === name && 'bg-[#dbdbdb]'} flex justify-center items-center ${!disabled && 'cursor-pointer'} ${styles}`} onClick={handleClick}>
+    {!isActive ? (
+      <img src={imgUrl} alt="fund_logo" className="w-1/2 h-1/2" />
+    ) : (
+      <img src={imgUrl} alt="fund_logo" className={`w-1/2 h-1/2 ${isActive !== name && 'grayscale'}`} />
+    )}
+  </div>
+)
 
 const Sidebar = () => {
-  const [isActive, setIsActive] = useState("dashboard")
-  const navigate = useNavigate()
-  const location = useLocation()
-
-  useEffect(() => {
-    setIsActive(location.pathname)
-  }, [location.pathname])
+  const navigate = useNavigate();
+  const [isActive, setIsActive] = useState('dashboard');
 
   return (
-    <div className="p-3 flex">
-      <div className="flex flex-col items-center gap-5">
-        <div className="py-3 text-accent">
-            <SiBlockchaindotcom size={20}/>
+    <div className="flex justify-between items-center flex-col sticky top-5 h-[93vh]">
+      <Link to="/">
+        <Icon styles="w-[52px] h-[52px] bg-[#dbdbdb]" imgUrl={logo} />
+      </Link>
+
+      <div className="flex-1 flex flex-col justify-between items-center bg-[#ededed] rounded-[20px] w-[76px] py-4 mt-12">
+        <div className="flex flex-col justify-center items-center gap-3">
+          {navlinks.map((link) => (
+            <Icon 
+              key={link.name}
+              {...link}
+              isActive={isActive}
+              handleClick={() => {
+                if(!link.disabled) {
+                  setIsActive(link.name);
+                  navigate(link.link);
+                }
+              }}
+            />
+          ))}
         </div>
-        {navlinks.map((item) => (
-          <NavItem
-           key={item.name} 
-           {...item} 
-           isActive={isActive === item.link}
-           onClick={() => {
-            if(!item.disabled) {
-                setIsActive(item.name)
-                navigate(item.link)
-            }
-           }}
-         />
-        ))}
+
+        <Icon styles="bg-[#ededed] shadow-secondary" imgUrl={sun} />
       </div>
     </div>
   )

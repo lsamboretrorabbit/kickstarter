@@ -6,11 +6,11 @@ import { Navbar, Sidebar } from "./components"
 
 const Layout = () => {
   return (
-    <div className="relative min-h-screen flex">
-      <div className="border-r border-gray-border hidden md:block">
+    <div className="relative sm:-8 p-4 bg-[#ffffff] min-h-screen flex flex-row">
+    <div className="sm:flex hidden mr-10 relative">
         <Sidebar />
       </div>
-      <div className="flex-1 h-[100dvh] overflow-scroll">
+      <div className="flex-1 max-sm:w-full max-w-[1280px] mx-auto sm:pr-5">
         <Navbar />
         <Outlet />
       </div>
