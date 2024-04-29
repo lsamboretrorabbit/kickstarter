@@ -4,30 +4,30 @@ import {BiMoneyWithdraw, BiLogOut} from "react-icons/bi"
 
 export const navlinks = [
     {
-      name: 'dashboard',
+      name: 'Dashboard',
       icon: FiGrid,
       link: '/',
     },
     {
-      name: 'campaign',
+      name: 'Campaign',
       icon: FiRadio,
       link: '/create',
     },
     {
-      name: 'payment',
+      name: 'Payment',
       icon: FiDollarSign,
       link: '/payment',
       disabled: true,
     },
     {
-      name: 'withdraw',
+      name: 'Withdraw',
       icon: BiMoneyWithdraw,
       link: '/withdraw',
       disabled: true,
     },
     {
-      name: 'profile',
+      name: 'Profile',
       icon: FiUser,
-      link: '/profile',
+      link: '/Profile',
     }
   ];

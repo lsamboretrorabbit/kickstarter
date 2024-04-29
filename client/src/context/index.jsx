@@ -12,7 +12,7 @@ const ContractContext = createContext()
 
 export const ContractContextProvider = ({ children }) => {
   const { contract } = useContract("0x4B56f9182536EEb0Ca5Fb14ad593F99FCa4f932E")
-  console.log(contract)
+  // console.log(contract)
   const { mutateAsync: createCampaign } = useContractWrite(
     contract,
     "createCampaign"

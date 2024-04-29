@@ -1,97 +1,95 @@
-import React, { useState } from "react"
-import { IoMenuOutline, IoCloseOutline } from "react-icons/io5"
-import Button from "./Button"
-import { navlinks } from "../constants"
-import {SiBlockchaindotcom} from 'react-icons/si'
-import Search from "./Search"
-import { useNavigate } from "react-router"
-import { useContractContext } from "../context"
-import { Link } from "react-router-dom"
+import React, { useState } from 'react'
+import { Link, useNavigate } from 'react-router-dom';
 
-const NavItem = ({ name, icon: Icon, link, disabled, onClick }) => {
-  return (
-    <Link to={link} onClick={onClick} className="p-3 text-gray-text flex items-center border-b border-gray-border">
-      <Icon size={20} />
-      <span className={`text-sm bg-dark-alt p-2 absolute ml-10 rounded-sm ${disabled && 'opacity-50'}`}>
-        {/* Capitalize first letter */}
-        {name[0].toUpperCase() + name.slice(1)}
-      </span>
-    </Link>
-  )
-}
-
-const ProfileButton = ({address}) => {
-  return (
-    <Link
-      to={"/profile"}
-      className="flex items-center gap-2 text-xs text-gray-text bg-dark-alt hover:bg-gray-border/80 rounded-md py-2 px-3 w-60 cursor-pointer"
-    >
-      <img src="/metamask.svg" alt="Metamask" className="w-5 h-5" />
-      <span className="flex-[2] pr-1 overflow-hidden truncate">{address}</span>
-    </Link>
-  )
-}
+import { useContractContext } from '../context';
+import { logo, menu, search, thirdweb } from '../assets';
+import { navlinks } from '../constants';
+import CustomButton from './CustomButton';
 
 const Navbar = () => {
-  const [menuOpen, setMenuOpen] = useState(false)
-  const navigate = useNavigate()
-  const { address, connect } = useContractContext()
+  const navigate = useNavigate();
+  const [isActive, setIsActive] = useState('dashboard');
+  const [toggleDrawer, setToggleDrawer] = useState(false);
+  const { connect, address } = useContractContext();
+
   return (
-    // Wrapper for navbar
-    <div className="w-full h-16 sticky top-0">
-      {/* Navbar */}
-      <div className="px-3 md:px-5 lg:px-10 h-16 flex items-center justify-between gap-5 fixed md:static w-full bg-dark-main border-b border-gray-border">
-        <div className="md:hidden">
-          {address ? (
-            <ProfileButton address={address}/>
-          ) : (
-            <SiBlockchaindotcom className="text-accent" size={25}/>
-          )}
-        </div>
-
-        <div className="max-w-md w-full hidden md:flex">
-          <Search placeholder={"Search for a campaign"} />
-        </div>
-
-        {/* Hamburger icon to toggle menu */}
-        <div
-          onClick={() => setMenuOpen((prev) => !prev)}
-          className="flex md:hidden text-warm-white p-2 rounded-md transition-all duration-200 z-50"
-        >
-          {menuOpen ? <IoCloseOutline size={25} />: <IoMenuOutline size={25} />}
-        </div>
-
-        <div className="hidden md:flex">
-          {address ? (
-            <ProfileButton address={address}/>
-          ) : (
-            <Button label={"Connect your wallet"} onClick={() => connect()} />
-          )}
+    <div className="flex md:flex-row flex-col-reverse justify-between mb-[35px] gap-6">
+      <div className="lg:flex-1 flex flex-row max-w-[458px] py-2 pl-4 pr-2 h-[52px] bg-[#1c1c24] rounded-[100px]">
+        <input type="text" placeholder="Search for campaigns" className="flex w-full font-epilogue font-normal text-[14px] placeholder:text-[#4b5264] text-white bg-transparent outline-none" />
+        
+        <div className="w-[72px] h-full rounded-[20px] bg-[#4acd8d] flex justify-center items-center cursor-pointer">
+          <img src={search} alt="search" className="w-[15px] h-[15px] object-contain"/>
         </div>
       </div>
 
-      {/* Navmenu which slides in */}
-      <div
-        className={`fixed right-0 top-16 h-[100dvh] w-full md:hidden flex flex-col gap-3 bg-dark-alt p-5 transition-all duration-500 ${
-          !menuOpen ? "translate-x-[100%]" : "translate-x-0"
-        }`}
-      >
-        {navlinks.map((item) => (
-          <NavItem key={item.name} {...item} onClick={()=>setMenuOpen(false)}/>
-        ))}
-        <div className="pt-2">
-          <Button
-            label={address ? "Create a campaign" : "Connect your wallet"}
-            onClick={() => {
-              if (address) {
-                navigate("/create")
-              } else {
-                connect()
-              }
-            }}
+      <div className="sm:flex hidden flex-row justify-end gap-4">
+        <CustomButton 
+          btnType="button"
+          title={address ? 'Create a campaign' + address : 'Connect'}
+          styles={address ? 'bg-[#1dc071]' : 'bg-[#8c6dfd]'}
+          handleClick={() => {
+            if(address) navigate('create-campaign')
+            else connect()
+          }}
+        />
+
+        <Link to="/profile">
+          <div className="w-[52px] h-[52px] rounded-full bg-[#2c2f32] flex justify-center items-center cursor-pointer">
+            <img src={thirdweb} alt="user" className="w-[60%] h-[60%] object-contain" />
+          </div>
+        </Link>
+      </div>
+
+      {/* Small screen navigation */}
+        <div className="sm:hidden flex justify-between items-center relative">
+        <div className="w-[40px] h-[40px] rounded-[10px] bg-[#2c2f32] flex justify-center items-center cursor-pointer">
+            <img src={logo} alt="user" className="w-[60%] h-[60%] object-contain" />
+          </div>
+
+          <img 
+            src={menu}
+            alt="menu"
+            className="w-[34px] h-[34px] object-contain cursor-pointer"
+            onClick={() => setToggleDrawer((prev) => !prev)}
           />
+
+          <div className={`absolute top-[60px] right-0 left-0 bg-[#1c1c24] z-10 shadow-secondary py-4 ${!toggleDrawer ? '-translate-y-[100vh]' : 'translate-y-0'} transition-all duration-700`}>
+            <ul className="mb-4">
+              {navlinks.map((link) => (
+                <li
+                  key={link.name}
+                  className={`flex p-4 ${isActive === link.name && 'bg-[#3a3a43]'}`}
+                  onClick={() => {
+                    setIsActive(link.name);
+                    setToggleDrawer(false);
+                    navigate(link.link);
+                  }}
+                >
+                  <img 
+                    src={link.imgUrl}
+                    alt={link.name}
+                    className={`w-[24px] h-[24px] object-contain ${isActive === link.name ? 'grayscale-0' : 'grayscale'}`}
+                  />
+                  <p className={`ml-[20px] font-epilogue font-semibold text-[14px] ${isActive === link.name ? 'text-[#1dc071]' : 'text-[#808191]'}`}>
+                    {link.name}
+                  </p>
+                </li>
+              ))}
+            </ul>
+
+            <div className="flex mx-4">
+            <CustomButton 
+              btnType="button"
+              title={address ? 'Create a campaign' : 'Connect'}
+              styles={address ? 'bg-[#1dc071]' : 'bg-[#8c6dfd]'}
+              handleClick={() => {
+                if(address) navigate('create-campaign')
+                else connect();
+              }}
+            />
+            </div>
+          </div>
         </div>
-      </div>
     </div>
   )
 }
