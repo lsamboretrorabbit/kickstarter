@@ -10,36 +10,21 @@ import { toast } from 'react-hot-toast'
 import { useNavigate } from "react-router"
 import FormField from "../components/FormField"
 import CustomButton from "../components/CustomButton"
+import Loader from "../components/Loader"
+import { money } from "../assets"
 
 const Create = () => {
-  const navigate = useNavigate()
-  const { createCampaign } = useContractContext()
+  const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(false);
+  const { createCampaign } = useContractContext();
   const [form, setForm] = useState({
     name: '',
     title: '',
     description: '',
-    target: '',
+    target: '', 
     deadline: '',
     image: ''
   });
-
-  // const onSubmit = async (data) => {
-  //   console.log('here')
-  //   checkIfImage(data.image, async (exists) => {
-  //     if (exists) {
-  //       toast.loading('Publishing campaign')
-  //       await createCampaign({
-  //         ...data,
-  //         target: ethers.utils.parseUnits(data.target, 18),
-  //       })
-  //       toast.dismiss()
-  //       toast.success('Campaign published')
-  //       navigate('/')
-  //     } else {
-  //       toast.error('Image link is invalid')
-  //     }
-  //   })
-  // }
 
   const handleFormFieldChange = (fieldName, e) => {
     setForm({ ...form, [fieldName]: e.target.value })
@@ -49,10 +34,10 @@ const Create = () => {
     e.preventDefault();
 
     checkIfImage(form.image, async (exists) => {
-      if (exists) {
-        // setIsLoading(true)
-        await createCampaign({ ...form, target: ethers.utils.parseUnits(form.target, 18) })
-        // setIsLoading(false);
+      if(exists) {
+        setIsLoading(true)
+        await createCampaign({ ...form, target: ethers.utils.parseUnits(form.target, 18)})
+        setIsLoading(false);
         navigate('/');
       } else {
         alert('Provide valid image URL')
@@ -62,18 +47,22 @@ const Create = () => {
   }
 
   return (
-    <div className="mx-auto max-w-7xl p-5">
-      <Heading title={"Create a new campaign"} />
-      <form onSubmit={handleSubmit} className="">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-10 py-5">
-          <FormField
+    <div className="bg-[#ededed] flex justify-center items-center flex-col rounded-[10px] sm:p-10 p-4">
+      {isLoading && <Loader />}
+      <div className="flex justify-center items-center p-[16px] sm:min-w-[380px] bg-[#1dc071] rounded-[10px]">
+        <h1 className="font-epilogue font-bold sm:text-[25px] text-[18px] leading-[38px]">Start a Campaign</h1>
+      </div>
+
+      <form onSubmit={handleSubmit} className="w-full mt-[65px] flex flex-col gap-[30px]">
+        <div className="flex flex-wrap gap-[40px]">
+          <FormField 
             labelName="Your Name *"
             placeholder="John Doe"
             inputType="text"
             value={form.name}
             handleChange={(e) => handleFormFieldChange('name', e)}
           />
-         <FormField 
+          <FormField 
             labelName="Campaign Title *"
             placeholder="Write a title"
             inputType="text"
@@ -81,6 +70,7 @@ const Create = () => {
             handleChange={(e) => handleFormFieldChange('title', e)}
           />
         </div>
+
         <FormField 
             labelName="Story *"
             placeholder="Write your story"
@@ -88,8 +78,14 @@ const Create = () => {
             value={form.description}
             handleChange={(e) => handleFormFieldChange('description', e)}
           />
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 pt-5 pb-10">
-        <FormField 
+
+        <div className="w-full flex justify-start items-center p-4 bg-[#8c6dfd] h-[120px] rounded-[10px]">
+          <img src={money} alt="money" className="w-[40px] h-[40px] object-contain"/>
+          <h4 className="font-epilogue font-bold text-[25px] yes-text-white ml-[20px]">You will get 100% of the raised amount</h4>
+        </div>
+
+        <div className="flex flex-wrap gap-[40px]">
+          <FormField 
             labelName="Goal *"
             placeholder="ETH 0.50"
             inputType="text"
@@ -103,19 +99,23 @@ const Create = () => {
             value={form.deadline}
             handleChange={(e) => handleFormFieldChange('deadline', e)}
           />
-           <FormField 
+        </div>
+
+        <FormField 
             labelName="Campaign image *"
             placeholder="Place image URL of your campaign"
             inputType="url"
             value={form.image}
             handleChange={(e) => handleFormFieldChange('image', e)}
           />
-        </div>
-        <CustomButton 
+
+          <div className="flex justify-center items-center mt-[40px]">
+            <CustomButton 
               btnType="submit"
               title="Submit new campaign"
               styles="bg-[#1dc071]"
             />
+          </div>
       </form>
     </div>
   )

@@ -55,7 +55,7 @@ const CampaignPage = () => {
       <div className="flex items-center justify-between">
         <div className="flex flex-col gap-2">
           <span className="text-gray-text text-sm">Raised so far</span>
-          <span className="text-white font-medium text-4xl">
+          <span className="yes-text-white font-medium text-4xl">
             {state.amountCollected}{" "}
             <span className="text-gray-text text-sm">ETH</span>
           </span>
@@ -63,7 +63,7 @@ const CampaignPage = () => {
 
         <div className="flex flex-col gap-2">
           <span className="text-gray-text text-sm">Target</span>
-          <span className="text-white font-medium text-4xl">
+          <span className="yes-text-white font-medium text-4xl">
             {state.target} <span className="text-gray-text text-sm">ETH</span>
           </span>
         </div>
@@ -110,7 +110,7 @@ const CampaignPage = () => {
           ))}
         </>
       ) : (
-        <p className="text-white text-xs md:text-sm">
+        <p className="yes-text-white text-xs md:text-sm">
           {daysLeft > 0 ? "Be the first one to donate" : "No Donators"}
         </p>
       )}
@@ -118,7 +118,7 @@ const CampaignPage = () => {
       {/* If days remain show donation box */}
 
       {remainingDays > 0 && (
-        <div className="flex flex-col gap-10 p-10 bg-dark-alt rounded-xl my-10">
+        <div className="flex flex-col gap-10 p-10 bg-warm-white rounded-xl my-10">
           <Heading
             title={"Be a Force for Good"}
             subtitle={
